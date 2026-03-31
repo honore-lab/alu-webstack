@@ -1,23 +1,23 @@
 #!/usr/bin/env bash
-# This script displays subdomain information for a domain
+# Displays DNS record information for subdomains
 
-# Function to get subdomain info
-get_subdomain_info() {
-    local domain=$1
-    local sub=$2
-    local result
-    result=$(dig +short $sub.$domain)
-    echo "The subdomain $sub is a A record and points to $result"
-}
-
-# Main
 domain=$1
 subdomain=$2
 
+show_record() {
+    sub=$1
+    result=$(dig "$sub.$domain" +short | head -n 1)
+
+    if [ -n "$result" ]; then
+        echo "The subdomain $sub is a A record and points to $result"
+    fi
+}
+
 if [ -z "$subdomain" ]; then
-    for sub in www lb-01 web-01 web-02; do
-        get_subdomain_info $domain $sub
-    done
+    show_record www
+    show_record lb-01
+    show_record web-01
+    show_record web-02
 else
-    get_subdomain_info $domain $subdomain
+    show_record "$subdomain"
 fi
