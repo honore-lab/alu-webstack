@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# This script displays DNS information for a domain and its subdomains
+
+domain=$1
+subdomain=$2
+
+check_dns() {
+    sub=$1
+    dig "$sub.$domain" | awk '/ANSWER SECTION:/ {getline; print "The subdomain " sub " is a " $4 " record and points to " $5}' sub="$sub"
+}
+
+if [ -z "$subdomain" ]; then
+    check_dns "www"
+    check_dns "lb-01"
+    check_dns "web-01"
+    check_dns "web-02"
+else
+    check_dns "$subdomain"
+fi
