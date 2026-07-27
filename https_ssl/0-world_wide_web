@@ -7,8 +7,8 @@ fi
 
 DOMAIN=$1
 
-for sub in www lb-01 web-01 web-02; do
-    # Perform dig query and extract record type and IP destination
+if [ "$#" -eq 2 ]; then
+    sub=$2
     record_info=$(dig +noall +answer ${sub}.${DOMAIN})
     if [ -n "$record_info" ]; then
         record_type=$(echo "$record_info" | head -n1 | awk '{print $4}')
@@ -17,4 +17,15 @@ for sub in www lb-01 web-01 web-02; do
             echo "The subdomain ${sub} is a ${record_type} record and points to ${destination}"
         fi
     fi
-done
+else
+    for sub in www lb-01 web-01 web-02; do
+        record_info=$(dig +noall +answer ${sub}.${DOMAIN})
+        if [ -n "$record_info" ]; then
+            record_type=$(echo "$record_info" | head -n1 | awk '{print $4}')
+            destination=$(echo "$record_info" | head -n1 | awk '{print $5}')
+            if [ -n "$destination" ]; then
+                echo "The subdomain ${sub} is a ${record_type} record and points to ${destination}"
+            fi
+        fi
+    done
+fi
