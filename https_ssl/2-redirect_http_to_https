@@ -1,0 +1,16 @@
+frontend haproxy_http_in
+    bind *:80
+    mode http
+    redirect scheme https code 301 if !{ ssl_fc }
+
+frontend haproxy_ssl_in
+    bind *:443 ssl crt /etc/haproxy/certs/www.yourdomain.com.pem
+    mode http
+    default_backend web-backend
+
+backend web-backend
+    mode http
+    balance roundrobin
+    server 7069-web-01 3.85.164.195:80 check
+    server 7069-web-02 52.90.237.214:80 check
+    
