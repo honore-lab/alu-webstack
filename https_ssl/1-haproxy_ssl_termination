@@ -26,7 +26,7 @@ defaults
 frontend haproxy_http_in
     bind *:80
     mode http
-    default_backend web-backend
+    redirect scheme https code 301 if !{ ssl_fc }
 
 frontend haproxy_ssl_in
     bind *:443 ssl crt /etc/haproxy/certs/www.honoreideas.tech.pem
