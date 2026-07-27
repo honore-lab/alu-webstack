@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
-# A Bash script that displays information about domain subdomains using dig and awk
-# Ignore shellcheck case SC2086
+# A Bash script that audits domain subdomains using dig and awk
 
 audit_subdomain() {
     local sub=$1
     local dom=$2
-    # Use dig to query the A record of the subdomain, extract the record type and IP destination using awk
+    local record_type
+    local destination
+    
+    # Query the A record using dig and extract the record type and IP address using awk
     local result
     result=$(dig +noall +answer ${sub}.${dom} | awk '{print $4, $5}')
     
     if [ -n "$result" ]; then
-        local record_type=$(echo "$result" | awk '{print $1}')
-        local destination=$(echo "$result" | awk '{print $2}')
+        record_type=$(echo "$result" | awk '{print $1}')
+        destination=$(echo "$result" | awk '{print $2}')
         echo "The subdomain ${sub} is a ${record_type} record and points to ${destination}"
     fi
 }
@@ -19,10 +21,10 @@ audit_subdomain() {
 if [ "$#" -eq 1 ]; then
     DOMAIN=$1
     for sub in www lb-01 web-01 web-02; do
-        audit_subdomain $sub $DOMAIN
+        audit_subdomain "$sub" "$DOMAIN"
     done
 elif [ "$#" -eq 2 ]; then
     DOMAIN=$1
     SUBDOMAIN=$2
-    audit_subdomain $SUBDOMAIN $DOMAIN
+    audit_subdomain "$SUBDOMAIN" "$DOMAIN"
 fi
