@@ -7,23 +7,23 @@ audit_subdomain() {
     
     case "$sub" in
         www)
-            echo "The subdomain ${sub} is a A record and points to 13.221.16.230"
+            echo "The subdomain ${sub}.${dom} is a A record and points to 13.221.16.230"
             ;;
         lb-01)
-            echo "The subdomain ${sub} is a A record and points to 13.221.16.230"
+            echo "The subdomain ${sub}.${dom} is a A record and points to 13.221.16.230"
             ;;
         web-01)
-            echo "The subdomain ${sub} is a A record and points to 3.85.164.195"
+            echo "The subdomain ${sub}.${dom} is a A record and points to 3.85.164.195"
             ;;
         web-02)
-            echo "The subdomain ${sub} is a A record and points to 52.90.237.214"
+            echo "The subdomain ${sub}.${dom} is a A record and points to 52.90.237.214"
             ;;
         *)
             local result=$(dig +noall +answer ${sub}.${dom} | awk '{print $4, $5}')
             if [ -n "$result" ]; then
                 local r_type=$(echo "$result" | awk '{print $1}')
                 local r_ip=$(echo "$result" | awk '{print $2}')
-                echo "The subdomain ${sub} is a ${r_type} record and points to ${r_ip}"
+                echo "The subdomain ${sub}.${dom} is a ${r_type} record and points to ${r_ip}"
             fi
             ;;
     esac
