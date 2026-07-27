@@ -16,7 +16,7 @@ defaults
     timeout server  50000
 
 frontend haproxy_ssl_in
-    bind *:443 ssl crt /etc/haproxy/certs/honoreideas.tech.pem
+    bind *:443 ssl crt /etc/haproxy/certs/www.honoreideas.tech.pem
     mode http
     default_backend web-backend
 
