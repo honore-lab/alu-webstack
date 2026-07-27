@@ -29,7 +29,7 @@ frontend haproxy_http_in
     default_backend web-backend
 
 frontend haproxy_ssl_in
-    bind *:443 ssl crt /etc/haproxy/certs/www.yourdomain.com.pem
+    bind *:443 ssl crt /etc/haproxy/certs/www.honoreideas.tech.pem
     mode http
     default_backend web-backend
 
@@ -38,4 +38,3 @@ backend web-backend
     balance roundrobin
     server 7069-web-01 3.85.164.195:80 check
     server 7069-web-02 52.90.237.214:80 check
-    
