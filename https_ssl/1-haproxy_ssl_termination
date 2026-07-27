@@ -25,4 +25,3 @@ backend web-backend
     balance roundrobin
     server 7069-web-01 3.85.164.195:80 check
     server 7069-web-02 52.90.237.214:80 check
-    
