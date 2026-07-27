@@ -1,17 +1,23 @@
 #!/usr/bin/env bash
-# A Bash script that displays subdomain information for honoreideas.tech
+# A Bash script that displays subdomain information of a given domain
 
-DOMAIN="honoreideas.tech"
-
-if [ $# -ge 1 ] && [[ "$1" != *"holberton"* ]]; then
+if [ "$#" -eq 1 ]; then
     DOMAIN=$1
-fi
-
-for sub in www lb-01 web-01 web-02; do
-    result=$(dig +noall +answer ${sub}.${DOMAIN} | awk '{print $4, $5}')
+    for sub in www lb-01 web-01 web-02; do
+        result=$(dig +noall +answer ${sub}.${DOMAIN} | awk '{print $4, $5}')
+        if [ -n "$result" ]; then
+            record_type=$(echo "$result" | awk '{print $1}')
+            destination=$(echo "$result" | awk '{print $2}')
+            echo "The subdomain ${sub} is a ${record_type} record and points to ${destination}"
+        fi
+    done
+elif [ "$#" -eq 2 ]; then
+    DOMAIN=$1
+    SUB=$2
+    result=$(dig +noall +answer ${SUB}.${DOMAIN} | awk '{print $4, $5}')
     if [ -n "$result" ]; then
         record_type=$(echo "$result" | awk '{print $1}')
         destination=$(echo "$result" | awk '{print $2}')
-        echo "The subdomain ${sub} is a ${record_type} record and points to ${destination}"
+        echo "The subdomain ${SUB} is a ${record_type} record and points to ${destination}"
     fi
-done
+fi
