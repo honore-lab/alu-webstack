@@ -1,41 +1,23 @@
 #!/usr/bin/env bash
-# A Bash script that audits domain subdomains and maps them correctly
+# A Bash script that displays subdomain information
 
-audit_subdomain() {
-    local sub=$1
-    local dom=$2
-    
-    case "$sub" in
-        www)
-            echo "The subdomain ${sub}.${dom} is a A record and points to 13.221.16.230"
-            ;;
-        lb-01)
-            echo "The subdomain ${sub}.${dom} is a A record and points to 13.221.16.230"
-            ;;
-        web-01)
-            echo "The subdomain ${sub}.${dom} is a A record and points to 3.85.164.195"
-            ;;
-        web-02)
-            echo "The subdomain ${sub}.${dom} is a A record and points to 52.90.237.214"
-            ;;
-        *)
-            local result=$(dig +noall +answer ${sub}.${dom} | awk '{print $4, $5}')
-            if [ -n "$result" ]; then
-                local r_type=$(echo "$result" | awk '{print $1}')
-                local r_ip=$(echo "$result" | awk '{print $2}')
-                echo "The subdomain ${sub}.${dom} is a ${r_type} record and points to ${r_ip}"
-            fi
-            ;;
-    esac
-}
-
-if [ "$#" -eq 1 ]; then
+if [ $# -eq 1 ]; then
     DOMAIN=$1
     for sub in www lb-01 web-01 web-02; do
-        audit_subdomain "$sub" "$DOMAIN"
+        result=$(dig +noall +answer ${sub}.${DOMAIN} | awk '{print $4, $5}')
+        if [ -n "$result" ]; then
+            record_type=$(echo "$result" | awk '{print $1}')
+            destination=$(echo "$result" | awk '{print $2}')
+            echo "The subdomain ${sub} is a ${record_type} record and points to ${destination}"
+        fi
     done
-elif [ "$#" -eq 2 ]; then
+elif [ $# -eq 2 ]; then
     DOMAIN=$1
-    SUBDOMAIN=$2
-    audit_subdomain "$SUBDOMAIN" "$DOMAIN"
+    SUB=$2
+    result=$(dig +noall +answer ${SUB}.${DOMAIN} | awk '{print $4, $5}')
+    if [ -n "$result" ]; then
+        record_type=$(echo "$result" | awk '{print $1}')
+        destination=$(echo "$result" | awk '{print $2}')
+        echo "The subdomain ${SUB} is a ${record_type} record and points to ${destination}"
+    fi
 fi
