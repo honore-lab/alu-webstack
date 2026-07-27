@@ -1,32 +1,19 @@
 global
-    log /dev/log	local0
-    log /dev/log	local1 notice
+    log /dev/log local0
+    log /dev/log local1 notice
     chroot /var/lib/haproxy
     user haproxy
     group haproxy
     daemon
 
-    # Default SSL material locations
-    ca-base /etc/ssl/certs
-    crt-base /etc/ssl/private
-
-    # Default ciphers to use on SSL-enabled listening sockets.
-    ssl-default-bind-ciphers DEFAULT:!aNULL:!eNULL:!EXPORT:!DES:!3DES:!MD5:!PSK:!RC4:afa
-    ssl-default-bind-options no-sslv3
-
 defaults
-    log	global
-    mode	http
-    option	httplog
-    option	dontlognull
-        timeout connect 5000
-        timeout client  50000
-        timeout server  50000
-
-frontend haproxy_http_in
-    bind *:80
-    mode http
-    redirect scheme https code 301 if !{ ssl_fc }
+    log     global
+    mode    http
+    option  httplog
+    option  dontlognull
+    timeout connect 5000
+    timeout client  50000
+    timeout server  50000
 
 frontend haproxy_ssl_in
     bind *:443 ssl crt /etc/haproxy/certs/www.honoreideas.tech.pem
@@ -38,3 +25,4 @@ backend web-backend
     balance roundrobin
     server 7069-web-01 3.85.164.195:80 check
     server 7069-web-02 52.90.237.214:80 check
+    
