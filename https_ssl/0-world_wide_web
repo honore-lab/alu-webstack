@@ -9,20 +9,20 @@ DOMAIN=$1
 
 if [ "$#" -eq 2 ]; then
     sub=$2
-    record_info=$(dig +noall +answer ${sub}.${DOMAIN} | grep -v '^;' | grep A | head -n1)
+    record_info=$(dig +noall +answer ${sub}.${DOMAIN} | grep -v '^;' | grep A)
     if [ -n "$record_info" ]; then
-        record_type=$(echo "$record_info" | awk '{print $(NF-1)}')
-        destination=$(echo "$record_info" | awk '{print $NF}')
+        record_type=$(echo "$record_info" | head -n1 | awk '{print $(NF-1)}')
+        destination=$(echo "$record_info" | awk '{print $NF; exit}')
         if [ -n "$destination" ]; then
             echo "The subdomain ${sub} is a ${record_type} record and points to ${destination}"
         fi
     fi
 else
     for sub in www lb-01 web-01 web-02; do
-        record_info=$(dig +noall +answer ${sub}.${DOMAIN} | grep -v '^;' | grep A | head -n1)
+        record_info=$(dig +noall +answer ${sub}.${DOMAIN} | grep -v '^;' | grep A)
         if [ -n "$record_info" ]; then
-            record_type=$(echo "$record_info" | awk '{print $(NF-1)}')
-            destination=$(echo "$record_info" | awk '{print $NF}')
+            record_type=$(echo "$record_info" | head -n1 | awk '{print $(NF-1)}')
+            destination=$(echo "$record_info" | awk '{print $NF; exit}')
             if [ -n "$destination" ]; then
                 echo "The subdomain ${sub} is a ${record_type} record and points to ${destination}"
             fi
