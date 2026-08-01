@@ -9,7 +9,7 @@ DOMAIN=$1
 
 if [ "$#" -eq 2 ]; then
     sub=$2
-    record_info=$(dig +noall +answer ${sub}.${DOMAIN})
+    record_info=$(dig +noall +answer ${sub}.${DOMAIN} | grep -v '^;' | grep A | head -n1)
     if [ -n "$record_info" ]; then
         record_type=$(echo "$record_info" | head -n1 | awk '{print $4}')
         destination=$(echo "$record_info" | head -n1 | awk '{print $5}')
